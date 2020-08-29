@@ -98,16 +98,21 @@ static int parse_argv(std::string &output_path, std::string &code_prefix, std::v
 		}
 		break;
 		case 'T':
+		{
 			gen_text_func = true;
+		}
+		break;
 		case 'h':
 			printf(
 				"Argument:\n"
 				"    --output=[OUTPUT_PATH] | -o [OUTPUT_PATH]\n"
-				"        Path of result code file.\n"
+				"        Path of result code header (.h) file.\n"
 				"    --prefix=[RESULT_CODE_PREFIX] | -p [RESULT_CODE_PREFIX]\n"
 				"        Prefix of result code identifier.\n"
 				"    --base=[BASE_VALUE] | -b [BASE_VALUE]\n"
 				"        Base code value of resulted code.\n"
+				"    --text | -T\n"
+				"        Generate code value to text function.\n"
 				"    --help | -h\n"
 				"        Print help message.\n\n");
 			return -1;
@@ -179,6 +184,11 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "ERROR: load result code name failed: %d.\n", ret_code);
 		return 3;
+	}
+	if (0 != (ret_code = result_code_processor.SaveDefinitions(output_path, gen_text_func)))
+	{
+		fprintf(stderr, "ERROR: save definition failed: %d.\n", ret_code);
+		return 4;
 	}
 	result_code_processor.PrintCollectedCodes();
 	return 0;
