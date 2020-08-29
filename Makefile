@@ -8,6 +8,9 @@ src/chars.o: src/chars.c src/chars.h
 src/codeio.o: src/codeio.cc src/codeio.hh src/chars.h
 	$(CXX) -std=c++14 -c -Wall -o $@ $<
 
+src/errors.h: src/codeio.cc src/main.cc
+	./cresultcodecrawler -o $@ -p CRESTCODE -b -1 $^
+
 clean:
 	$(RM) cresultcodecrawler \
 		src/chars.o \
