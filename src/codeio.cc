@@ -366,6 +366,8 @@ namespace cresultcodecrawler
 #define ST_COMMENT_E1BLOCK 5
 #define ST_STRING_N 6
 #define ST_STRING_ESCAPE 7
+#define ST_CHAR_N 8
+#define ST_CHAR_ESCAPE 9
 		char input_buf[INPUT_BUFFER_SIZE];
 		int input_idx = 0;
 		char ch = '\0';
@@ -403,6 +405,10 @@ namespace cresultcodecrawler
 				{
 					state = ST_STRING_N;
 				}
+				else if (ch == '\'')
+				{
+					state = ST_CHAR_N;
+				}
 				break;
 			case ST_IDENTIFIER_S:
 				if (is_identifier_character(ch))
@@ -436,6 +442,11 @@ namespace cresultcodecrawler
 				{
 					input_idx = 0;
 					state = ST_STRING_N;
+				}
+				else if (ch == '\'')
+				{
+					input_idx = 0;
+					state = ST_CHAR_N;
 				}
 				else
 				{
@@ -492,6 +503,19 @@ namespace cresultcodecrawler
 			case ST_STRING_ESCAPE:
 				state = ST_STRING_N;
 				break;
+			case ST_CHAR_N:
+				if (ch == '\\')
+				{
+					state = ST_CHAR_ESCAPE;
+				}
+				else if (ch == '\'')
+				{
+					state = ST_INIT;
+				}
+				break;
+			case ST_CHAR_ESCAPE:
+				state = ST_CHAR_N;
+				break;
 			}
 			if ('\n' == ch)
 			{
@@ -507,6 +531,8 @@ namespace cresultcodecrawler
 #undef ST_COMMENT_E1BLOCK
 #undef ST_STRING_N
 #undef ST_STRING_ESCAPE
+#undef ST_CHAR_N
+#undef ST_CHAR_ESCAPE
 	}
 
 	int ResultCodes::loadResultCodeNames(std::string &file_path)
