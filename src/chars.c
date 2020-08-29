@@ -3,7 +3,7 @@
 int is_identifier_character(char ch)
 {
 	if (
-		((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z')) || ((ch >= '0') && (ch <= '9')) || (ch == '_') || (ch >= 0x80))
+		((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z')) || ((ch >= '0') && (ch <= '9')) || (ch == '_') || ((ch > 0x7F) || (ch < 0)))
 	{
 		return 1;
 	}
