@@ -344,7 +344,7 @@ namespace cresultcodecrawler
 				return 1;
 			}
 			d_filesize = statbuf.st_size;
-			if (MAP_FAILED == (d_raw = (char *)(mmap(NULL, d_filesize, PROT_READ, MAP_FILE, d_fd, 0))))
+			if (MAP_FAILED == (d_raw = (char *)(mmap(NULL, d_filesize, PROT_READ, MAP_SHARED, d_fd, 0))))
 			{
 				perror("ERR: cannot create mmap");
 				return 1;
@@ -528,7 +528,7 @@ namespace cresultcodecrawler
 				return 1;
 			}
 			d_filesize = statbuf.st_size;
-			if (MAP_FAILED == (d_raw = (char *)(mmap(NULL, d_filesize, PROT_READ, MAP_FILE, d_fd, 0))))
+			if (MAP_FAILED == (d_raw = (char *)(mmap(NULL, d_filesize, PROT_READ, MAP_SHARED, d_fd, 0))))
 			{
 				perror("ERR: cannot create mmap");
 				return 1;
