@@ -682,7 +682,11 @@ namespace cresultcodecrawler
 		if (gen_text_func)
 		{
 			std::string src_file_path = makeSourceFilePath(file_path);
-			this->saveDefinitionSupportRoutines(src_file_path, file_path, gen_text_func);
+			int ret_code = this->saveDefinitionSupportRoutines(src_file_path, file_path, gen_text_func);
+			if (0 != ret_code)
+			{
+				fprintf(stderr, "ERROR: failed on save support routine to [%s]: %s (%d).", src_file_path.c_str(), str_CRESTCODE_code(ret_code), ret_code);
+			}
 		}
 		return 0;
 	}

@@ -178,17 +178,17 @@ int main(int argc, char *argv[])
 	cresultcodecrawler::ResultCodes result_code_processor(base_value, code_prefix);
 	if (0 != (ret_code = result_code_processor.LoadDefinitions(output_path)))
 	{
-		fprintf(stderr, "ERROR: load definition failed [%s]: %d.\n", output_path.c_str(), ret_code);
+		fprintf(stderr, "ERROR: load definition failed [%s]: %s (%d).\n", output_path.c_str(), str_CRESTCODE_code(ret_code), ret_code);
 		return 2;
 	}
 	if (0 != (ret_code = result_code_processor.LoadResultCodeNames(input_paths)))
 	{
-		fprintf(stderr, "ERROR: load result code name failed: %d.\n", ret_code);
+		fprintf(stderr, "ERROR: load result code name failed: %s (%d).\n", str_CRESTCODE_code(ret_code), ret_code);
 		return 3;
 	}
 	if (0 != (ret_code = result_code_processor.SaveDefinitions(output_path, gen_text_func)))
 	{
-		fprintf(stderr, "ERROR: save definition failed: %d.\n", ret_code);
+		fprintf(stderr, "ERROR: save definition failed: %s (%d).\n", str_CRESTCODE_code(ret_code), ret_code);
 		return 4;
 	}
 	result_code_processor.PrintCollectedCodes();

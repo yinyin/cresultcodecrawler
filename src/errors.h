@@ -26,6 +26,8 @@ extern "C"
 #define CRESTCODE_ERR_OPEN_SRC_FILE -13
 #define CRESTCODE_ERR_OPEN_SUPPORT_ROUTINE_FILE -17
 
+const char *str_CRESTCODE_code(int code);
+
 #ifdef __cplusplus
 }
 #endif
