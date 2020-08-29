@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 
+#include "errors.h"
 #include "chars.h"
 #include "codeio.hh"
 
@@ -334,20 +335,20 @@ namespace cresultcodecrawler
 			}
 			fprintf(stderr, "ERROR: cannot open definition file for read [%s] @(%s:%d).\n", file_path.c_str(), __FILE__, __LINE__);
 			perror("open definition file failed.");
-			return 1;
+			return CRESTCODE_ERR_OPEN_DEF_FILE;
 		}
 		{
 			struct stat statbuf;
 			if (-1 == fstat(d_fd, &statbuf))
 			{
 				perror("ERR: cannot fstat code definition file");
-				return 1;
+				return CRESTCODE_ERR_FSTAT_DEF_FILE;
 			}
 			d_filesize = statbuf.st_size;
 			if (MAP_FAILED == (d_raw = (char *)(mmap(NULL, d_filesize, PROT_READ, MAP_SHARED, d_fd, 0))))
 			{
 				perror("ERR: cannot create mmap");
-				return 1;
+				return CRESTCODE_ERR_MMAP_DEF_FILE;
 			}
 		}
 		this->parseDefinitions(d_raw, d_raw + d_filesize);
@@ -544,20 +545,20 @@ namespace cresultcodecrawler
 		{
 			fprintf(stderr, "ERROR: cannot open source file for read [%s] @(%s:%d).\n", file_path.c_str(), __FILE__, __LINE__);
 			perror("open source file failed.");
-			return 1;
+			return CRESTCODE_ERR_OPEN_SRC_FILE;
 		}
 		{
 			struct stat statbuf;
 			if (-1 == fstat(d_fd, &statbuf))
 			{
 				perror("ERR: cannot fstat source file");
-				return 1;
+				return CRESTCODE_ERR_FSTAT_SRC_FILE;
 			}
 			d_filesize = statbuf.st_size;
 			if (MAP_FAILED == (d_raw = (char *)(mmap(NULL, d_filesize, PROT_READ, MAP_SHARED, d_fd, 0))))
 			{
 				perror("ERR: cannot create mmap");
-				return 1;
+				return CRESTCODE_ERR_MMAP_SRC_FILE;
 			}
 		}
 		this->parseResultCodeNames(d_raw, d_raw + d_filesize);
@@ -568,6 +569,7 @@ namespace cresultcodecrawler
 
 	int ResultCodes::LoadResultCodeNames(std::vector<std::string> &file_paths)
 	{
+		int result_code = 0;
 		for (auto file_path : file_paths)
 		{
 			int ret_code;
@@ -575,6 +577,7 @@ namespace cresultcodecrawler
 			if (0 != (ret_code = this->loadResultCodeNames(file_path)))
 			{
 				fprintf(stderr, "ERROR: having error on load result code names from [%s]: %d\n", file_path.c_str(), ret_code);
+				result_code = CRESTCODE_ERR_ONE_OF_SRC_FILE_CANNOT_LOAD;
 			}
 		}
 		return 0;
@@ -587,7 +590,7 @@ namespace cresultcodecrawler
 		if (NULL == (fp = fopen(file_path.c_str(), "w")))
 		{
 			fprintf(stderr, "ERROR: cannot open file [%s] for writing support routines.\n", file_path.c_str());
-			return -1;
+			return CRESTCODE_ERR_OPEN_SUPPORT_ROUTINE_FILE;
 		}
 		fputs(GENERATE_BY_STMT "\n"
 							   "#include <stdlib.h>\n"
@@ -641,7 +644,7 @@ namespace cresultcodecrawler
 		if (NULL == (fp = fopen(file_path.c_str(), "w")))
 		{
 			fprintf(stderr, "ERROR: cannot open file [%s] for writing code definition.\n", file_path.c_str());
-			return -1;
+			return CRESTCODE_ERR_OPEN_DEF_FILE_OUT;
 		}
 		fprintf(fp, "#ifndef %s\n", this->header_guard.c_str());
 		fprintf(fp, "#define %s 1\n", this->header_guard.c_str());

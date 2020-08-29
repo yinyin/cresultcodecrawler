@@ -9,6 +9,7 @@
 
 #include "chars.h"
 #include "codeio.hh"
+#include "errors.h"
 
 static int check_result_code_prefix(char *p, char *p_last_ch)
 {
@@ -24,11 +25,11 @@ static int check_result_code_prefix(char *p, char *p_last_ch)
 			len++;
 			continue;
 		}
-		return -1;
+		return CRESTCODE_ARGERR_ILLEGAL_IDENT_CHAR;
 	}
 	if (len == 0)
 	{
-		return -2;
+		return CRESTCODE_ARGERR_EMPTY_IDENT_CHAR;
 	}
 	*p_last_ch = last_ch;
 	return 0;
@@ -60,7 +61,7 @@ static int parse_argv(std::string &output_path, std::string &code_prefix, std::v
 			if (NULL == (p = realpath(optarg, NULL)))
 			{
 				perror("cannot expand given output path");
-				return -2;
+				return CRESTCODE_ARGERR_EXPAND_DEF_FILE_PATH;
 			}
 			output_path = p;
 			free(p);
@@ -72,7 +73,7 @@ static int parse_argv(std::string &output_path, std::string &code_prefix, std::v
 			if (0 != check_result_code_prefix(optarg, &last_ch))
 			{
 				fprintf(stderr, "ERROR: option `--prefix=` need contain identifier characters: [%s].\n", optarg);
-				return -3;
+				return CRESTCODE_ARGERR_PREFIX_NEED_IDENT_CHARS;
 			}
 			code_prefix = optarg;
 			if (last_ch != '_')
@@ -93,7 +94,7 @@ static int parse_argv(std::string &output_path, std::string &code_prefix, std::v
 			else
 			{
 				fprintf(stderr, "ERROR: option `--base=` need have valid code value: [%s].\n", optarg);
-				return -4;
+				return CRESTCODE_ARGERR_INVALID_BASE_CODE_VALUE;
 			}
 		}
 		break;
@@ -115,7 +116,7 @@ static int parse_argv(std::string &output_path, std::string &code_prefix, std::v
 				"        Generate code value to text function.\n"
 				"    --help | -h\n"
 				"        Print help message.\n\n");
-			return -1;
+			return CRESTCODE_EMPTY_OPTIONS;
 		default:
 			fprintf(stderr, "unknown option code 0x%08X ??\n", c);
 		}
@@ -123,7 +124,7 @@ static int parse_argv(std::string &output_path, std::string &code_prefix, std::v
 	if (optind >= argc)
 	{
 		fprintf(stderr, "ERROR: require code file list for scanning result code.\n");
-		return -3;
+		return CRESTCODE_ARGERR_EMPTY_SOURCE_FILES;
 	}
 	for (int i = optind; i < argc; i++)
 	{
@@ -133,7 +134,7 @@ static int parse_argv(std::string &output_path, std::string &code_prefix, std::v
 		{
 			fprintf(stderr, "ERROR: failed at expand input path [%s]\n", q);
 			perror("cannot expand given input path");
-			return -4;
+			return CRESTCODE_ARGERR_EXPAND_SRC_PATHS;
 		}
 		input_paths.push_back(std::string(p));
 		free(p);
@@ -141,7 +142,7 @@ static int parse_argv(std::string &output_path, std::string &code_prefix, std::v
 	if (input_paths.empty())
 	{
 		fprintf(stderr, "ERROR: input code path is empty.\n");
-		return -5;
+		return CRESTCODE_ARGERR_EMPTY_SOURCE_FILES;
 	}
 	if (code_prefix.empty())
 	{
