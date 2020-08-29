@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <map>
 #include <vector>
+#include <string>
 
 namespace cresultcodecrawler
 {
