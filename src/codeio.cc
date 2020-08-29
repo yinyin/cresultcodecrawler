@@ -580,7 +580,7 @@ namespace cresultcodecrawler
 				result_code = CRESTCODE_ERR_ONE_OF_SRC_FILE_CANNOT_LOAD;
 			}
 		}
-		return 0;
+		return result_code;
 	}
 
 	int ResultCodes::saveDefinitionSupportRoutines(std::string &file_path, std::string &header_file_path, bool gen_text_func)
